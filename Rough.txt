@@ -1,0 +1,43 @@
+Debugging:
+if __name__ == "__main__":
+
+    question = "Who was the first person on the Moon?"
+
+    start = time.time()
+    context = retriever.invoke(question)
+    print("Retriever:", time.time() - start)
+
+    start = time.time()
+    reranked = reranker.invoke({"question": question, "context": context})
+    print("rerank_string: ",reranked)
+    print("Reranker:", time.time() - start)
+
+    start = time.time()
+    prompt = PromptTemplate().invoke(reranked)
+    print("Prompt:", time.time() - start)
+
+    start = time.time()
+    response = chat_Model.invoke(prompt)
+    print("LLM:", time.time() - start)
+
+    start = time.time()
+    answer = parser.invoke(response)
+    print("Parser:", time.time() - start)
+
+    print(answer)
+
+# Apollo Program:
+# - Who was first on the Moon?
+# - When did Apollo 11 land?
+
+# ISRO:
+# - What does ISRO stand for?
+# - Which country operates ISRO?
+
+# JWST:
+# - What does JWST observe?
+# - When was it launched?
+
+# Black Hole:
+# - What is a black hole?
+# - Why can't light escape it?
