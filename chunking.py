@@ -1,10 +1,15 @@
 from nltk.tokenize import sent_tokenize
 import nltk
-nltk.download("punkt_tab")
+
+try:
+    nltk.data.find("tokenizers/punkt_tab")
+except LookupError:
+    nltk.download("punkt_tab")
 from langchain_core.documents import Document
-from models import decoder_tokenizer,encoder_tokenizer
+from models import decoder_tokenizer, encoder_tokenizer
 from langchain_community.document_loaders import WikipediaLoader
 import wikipedia
+
 wikipedia.set_user_agent("MyRAGProject/1.0 (mihirvyasapple@email.com)")
 import os
 import pickle
@@ -23,6 +28,7 @@ articles = [
     "Milky Way",
 ]
 
+
 def get_chunks():
     os.makedirs("data", exist_ok=True)
     if os.path.exists("data/chunks.pkl"):
@@ -30,15 +36,22 @@ def get_chunks():
 
         with open("data/chunks.pkl", "rb") as f:
             return pickle.load(f)
-        
+
     print("Creating chunks...")
     docs = load_wikipedia_Articles()
-    chunks = createParent_child_chunks(docs=docs,parent_chunk_size=400,parent_overlap=2,child_chunk_size=150,child_overlap=1)
+    chunks = createParent_child_chunks(
+        docs=docs,
+        parent_chunk_size=400,
+        parent_overlap=2,
+        child_chunk_size=150,
+        child_overlap=1,
+    )
 
     with open("data/chunks.pkl", "wb") as f:
         pickle.dump(chunks, f)
 
     return chunks
+
 
 def load_wikipedia_Articles():
     docs = []
